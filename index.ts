@@ -3,10 +3,11 @@ import { Client, GatewayIntentBits } from 'discord.js';
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
+import { connect, getDb } from './db';
 import { verify_signature } from "./bitcoin-rpc";
-import inscriptions from "./inscriptions";
 import configureCommand from './commands/configure';
 import registerCommand from './commands/register';
+
 
 // Creating a new Discord client instance
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers]});
@@ -29,6 +30,7 @@ const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 // Updating the registered application commands with the commands array
 (async () => {
   try {
+	await connect();
     console.log('Started refreshing application (/) commands.');
 
     await rest.put(Routes.applicationCommands(process.env.APPLICATION_ID), { body: commands });
@@ -82,8 +84,9 @@ client.on(Events.InteractionCreate, async(interaction) => {
 	try{
 		const result = await verify_signature({ address: inscriptionInfo.address, signature, message: "munch munch"});
 		if(result.error) throw new Error(result.error);
-		const role = inscriptions[inscriptionId];
-		await member.roles.add(role);
+		const db = getDb();
+		const inscription = await db.collection('inscriptions').findOne({ inscriptionId });
+		await member.roles.add(inscription.role);
 
 		interaction.reply({ content: 'You are approved' });
 	} catch(e) {

@@ -1,6 +1,6 @@
 import { RoleSelectMenuBuilder } from "@discordjs/builders";
 import { ActionRowBuilder, ComponentType, SlashCommandBuilder } from "discord.js";
-import inscriptions from "../inscriptions";
+import { getDb } from "../db";
 
 export default {
 	data: new SlashCommandBuilder()
@@ -32,9 +32,13 @@ export default {
 
 		collector.on('collect', async interaction => {
 			const roleId = interaction.values[0];
-			for(let i = 0; i < newInscriptions.length; i ++) {
-				inscriptions[newInscriptions[i]] = roleId;
-			}
+			const db = getDb();
+			await db.collection('inscriptions').insertMany(
+				newInscriptions.map(inscriptionId => ({
+					inscriptionId,
+					role: roleId
+				}))
+			)
 			await interaction.reply(`You selected ${roleId}`);
 		});
 	},
