@@ -1,6 +1,6 @@
 import RpcClient from "bitcoin-core";
 
-const bitcoin = async ({ address, signature, message }) => {
+export const verify_signature = async ({ address, signature, message }) => {
 
   if (!address || !signature || !message) {
     return ({ error: "Missing parameters" });
@@ -35,5 +35,3 @@ const bitcoin = async ({ address, signature, message }) => {
     return { error: "Failed to verify message" };
   }
 };
-
-export default bitcoin;
