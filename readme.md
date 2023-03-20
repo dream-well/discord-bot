@@ -7,7 +7,7 @@ This project requires Node.js and npm.
 1. Clone the GitHub repository:
 
 ```
-git clone https://github.com/dream-well/discord-bot.git
+git clone https://github.com/chain-cpu/discord-bot.git
 ```
 
 2. Install the dependencies:
