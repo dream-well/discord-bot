@@ -6,7 +6,7 @@ dotenv.config();
 import { connect, getDb } from './db';
 import { verify_signature } from "./bitcoin-rpc";
 import configureCommand from './commands/configure';
-import registerCommand from './commands/register';
+import verifyCommand from './commands/verify';
 import randomWords from "random-words";
 import { AnyComponentBuilder, ButtonBuilder, EmbedBuilder } from "@discordjs/builders";
 
@@ -16,20 +16,20 @@ const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBit
 
 // Creating a collection to store all commands
 client['commands'] = new Collection();
-// Adding the configure and register commands to the collection
+// Adding the configure and verify commands to the collection
 client['commands'].set(configureCommand.data.name, configureCommand);
-client['commands'].set(registerCommand.data.name, registerCommand);
+client['commands'].set(verifyCommand.data.name, verifyCommand);
 
 // Creating an array of all the commands in JSON format
 const commands = [
   configureCommand.data.toJSON(),
-  registerCommand.data.toJSON()
+  verifyCommand.data.toJSON()
 ];
 
 // Creating a new REST instance to communicate with Discord API
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
-// Updating the registered application commands with the commands array
+// Updating the verifyed application commands with the commands array
 (async () => {
   try {
 	await connect();
@@ -104,7 +104,7 @@ client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
   
 	if (!channel) return;
 	console.log('channel', channel);
-	// (channel as TextChannel).send(`Welcome to the server, ${member}! Will you register now? /register`);
+	// (channel as TextChannel).send(`Welcome to the server, ${member}! Will you verify now? /verify`);
 	// const channel = member.guild.systemChannel;
 	if (!channel) return;
 
@@ -117,8 +117,8 @@ client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
 
 		// create a new message button
 		const button = new ButtonBuilder()
-		.setCustomId('btn-register') // set a custom ID for the button
-		.setLabel('Register') // set the label of the button
+		.setCustomId('btn-verify') // set a custom ID for the button
+		.setLabel('verify') // set the label of the button
 		.setStyle(ButtonStyle.Primary)
 
 		// add the button to the message action row
@@ -132,10 +132,10 @@ client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
 	}
 });
 
-// Handle the register button click
+// Handle the verify button click
 client.on(Events.InteractionCreate, interaction => {
 	if (!interaction.isButton()) return;
-	registerCommand.execute(interaction);
+	verifyCommand.execute(interaction);
 });
   
 // Discord bot login

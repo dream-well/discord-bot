@@ -42,7 +42,7 @@ The project is a Discord bot that allows users to configure their server to acce
 
 To configure the server, use the `/configure` command. This will prompt the user to enter a list of inscription IDs and select a role.
 
-Once the server is configured, when a user joins the server, bot will send a register button to the user in welcome channel, or the user can use `/register` command to register their inscription IDs. This will open a modal containing two text inputs, one for the inscription ID and one for signature of the random message.
+Once the server is configured, when a user joins the server, bot will send a verify button to the user in welcome channel, or the user can use `/verify` command to verify their inscription IDs. This will open a modal containing two text inputs, one for the inscription ID and one for signature of the random message. When the user submits, bot will check if the signature is valid and assign a role that previously configured by `/configure` command to the user.
 
 ## License
 This code is licensed under the MIT License.
