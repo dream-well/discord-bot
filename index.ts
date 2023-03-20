@@ -1,4 +1,4 @@
-import { Collection, Events, GuildMember, REST, Routes, TextChannel } from "discord.js";
+import { ActionRowBuilder, ButtonStyle, Collection, Embed, Events, GuildMember, ModalBuilder, REST, Routes, TextChannel, TextInputBuilder, TextInputStyle } from "discord.js";
 import { Client, GatewayIntentBits } from 'discord.js';
 import axios from 'axios';
 import dotenv from 'dotenv';
@@ -7,6 +7,8 @@ import { connect, getDb } from './db';
 import { verify_signature } from "./bitcoin-rpc";
 import configureCommand from './commands/configure';
 import registerCommand from './commands/register';
+import randomWords from "random-words";
+import { AnyComponentBuilder, ButtonBuilder, EmbedBuilder } from "@discordjs/builders";
 
 
 // Creating a new Discord client instance
@@ -86,7 +88,8 @@ client.on(Events.InteractionCreate, async(interaction) => {
 		if(result.error) throw new Error(result.error);
 		const db = getDb();
 		const inscription = await db.collection('inscriptions').findOne({ inscriptionId });
-		await member.roles.add(inscription.role);
+		const role = interaction.guild.roles.cache.get(inscription.role);
+		console.log(member);
 
 		interaction.reply({ content: 'You are approved' });
 	} catch(e) {
@@ -95,13 +98,44 @@ client.on(Events.InteractionCreate, async(interaction) => {
 });
 
 // When a new member joins the server
-client.on(Events.GuildMemberAdd, (member: GuildMember) => {
+client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
 	console.log("new member", member.user);
 	const channel = client.channels.cache.find(ch => ch['name'] == 'welcome-channel');
   
 	if (!channel) return;
 	console.log('channel', channel);
-	(channel as TextChannel).send(`Welcome to the server, ${member}! Will you register now? /register`);
+	// (channel as TextChannel).send(`Welcome to the server, ${member}! Will you register now? /register`);
+	// const channel = member.guild.systemChannel;
+	if (!channel) return;
+
+
+	// Send the embed as a message in the system channel
+	try {
+		const channel = member.guild.systemChannel;
+		// create a new message action row
+		const row = new ActionRowBuilder();
+
+		// create a new message button
+		const button = new ButtonBuilder()
+		.setCustomId('btn-register') // set a custom ID for the button
+		.setLabel('Register') // set the label of the button
+		.setStyle(ButtonStyle.Primary)
+
+		// add the button to the message action row
+		row.addComponents(button);
+
+		// send the message with the action row containing the button
+		channel.send({ content: `Welcome ${member}`, components: [row as any] });
+		// Add a reaction to the message
+	} catch (error) {
+		console.error(`Failed to send welcome message: ${error}`);
+	}
+});
+
+// Handle the register button click
+client.on(Events.InteractionCreate, interaction => {
+	if (!interaction.isButton()) return;
+	registerCommand.execute(interaction);
 });
   
 // Discord bot login
