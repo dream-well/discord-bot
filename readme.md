@@ -6,11 +6,15 @@ This project requires Node.js and npm.
 
 1. Clone the GitHub repository:
 
-`git clone https://github.com/dream-well/discord-bot.git`
+```
+git clone https://github.com/dream-well/discord-bot.git
+```
 
 2. Install the dependencies:
 
-`npm install`
+```
+npm install
+```
 
 3. Create a `.env` file in the root directory:
 
@@ -22,7 +26,9 @@ INSCRIPTION_API=<YOUR_INSCRIPTION_API>
 
 4. Run the bot:
 
-`npm start`
+```
+npm start
+```
 
 # Usage
 
