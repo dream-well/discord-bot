@@ -1,28 +1,36 @@
 # Discord.js Command Handler Example
 This is a basic example of a command handler for a Discord bot using the Discord.js library. The code shows how to define and register commands, handle incoming interactions, and interact with the Discord API to send messages and update roles.
+# Installation and Setup
 
-## Installation
-Clone this repository: git clone https://github.com/dream-well/discord-bot
+This project requires Node.js and npm.
 
-Install dependencies: npm install
+1. Clone the GitHub repository:
 
-Set environment variables:
+`git clone https://github.com/dream-well/discord-bot.git`
 
-TOKEN: Your Discord bot's API token
+2. Install the dependencies:
 
-INSRIPTION_API: The URL of an API endpoint that provides information about inscriptions (not used in this example)
+`npm install`
 
-Start the bot: npm start
+3. Create a `.env` file in the root directory:
 
-## Usage
-Once the bot is running, you can use the following commands:
+```
+TOKEN=<YOUR_BOT_TOKEN>
+APPLICATION_ID=<YOUR_APPLICATION_ID>
+INSCRIPTION_API=<YOUR_INSCRIPTION_API>
+```
 
-/configure: Configures the bot with various settings (not implemented in this example)
+4. Run the bot:
 
-/register: Prompts the user to enter an inscription ID and signature, and then verifies the signature against the inscription's Bitcoin address. If the signature is valid, the user is granted a role corresponding to the inscription 
-ID.
+`npm start`
 
-When a new user joins the server, the bot sends a welcome message to the welcome-channel and prompts the user to register using the /register command.
+# Usage
+
+The project is a Discord bot that allows users to configure their server to accept inscription IDs.
+
+To configure the server, use the `/configure` command. This will prompt the user to enter a list of inscription IDs and select a role.
+
+Once the server is configured, when a user joins the server, bot will send a register button to the user in welcome channel, or the user can use `/register` command to register their inscription IDs. This will open a modal containing two text inputs, one for the inscription ID and one for signature of the random message.
 
 ## License
 This code is licensed under the MIT License.
