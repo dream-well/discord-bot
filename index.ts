@@ -81,8 +81,14 @@ client.on(Events.InteractionCreate, async(interaction) => {
 		interaction.reply({ content: 'Invalid input', ephemeral: true });
 		return;
 	}
-	const inscriptionInfo = (await axios.get(process.env.INSCRIPTION_API + "/" + inscriptionId)).data;
-	console.log(inscriptionInfo);
+	let inscriptionInfo;
+	try {
+		inscriptionInfo = (await axios.get(process.env.INSCRIPTION_API + "/" + inscriptionId)).data;
+	} catch (error) {
+		console.log("Bad inscription id");
+		interaction.reply({ content: 'Bad inscription id', ephemeral: true})
+		return;
+	}
 	try{
 		const result = await verify_signature({ address: inscriptionInfo.address, signature, message: "munch munch"});
 		if(result.error) throw new Error(result.error);
@@ -120,7 +126,7 @@ client.on(Events.GuildMemberAdd, async (member: GuildMember) => {
 		.setCustomId('btn-verify') // set a custom ID for the button
 		.setLabel('verify') // set the label of the button
 		.setStyle(ButtonStyle.Primary)
-
+		
 		// add the button to the message action row
 		row.addComponents(button);
 
@@ -140,3 +146,7 @@ client.on(Events.InteractionCreate, interaction => {
   
 // Discord bot login
 client.login(process.env.TOKEN);
+
+process.on('uncaughtException', function (err) {
+	console.log('Caught exception: ', err);
+});
